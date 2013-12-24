@@ -21,10 +21,6 @@ module Crawler
       page.css('.col-md-3.col-sm-4.col-xs-6 > a').map do |a|
         "http://#{ URI.parse(source.url).host }#{ a.attr(:href) }"
       end
-
-      [page.css('.col-md-3.col-sm-4.col-xs-6 > a').map do |a|
-        "http://#{ URI.parse(source.url).host }#{ a.attr(:href) }"
-      end.first]
     end
 
     def parse_tshirt(options)

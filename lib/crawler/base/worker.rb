@@ -8,7 +8,7 @@ module Crawler
         return
       end
 
-      @filename = File.basename(@asset.source_url)
+      @filename = File.basename URI.parse(@asset.source_url).path
       @local_image = Crawler::FileHelper.find_local_image(@filename)
       if @local_image
         @source = 'local'
