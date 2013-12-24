@@ -2,7 +2,7 @@ class CreateSizes < ActiveRecord::Migration
   def change
     create_table :sizes, options: 'engine=MyISAM DEFAULT CHARSET=utf8' do |t|
       t.references :t_shirt
-      t.integer :label
+      t.string :label
       t.string :gender
     end
     add_index :sizes, :t_shirt_id

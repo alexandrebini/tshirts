@@ -34,7 +34,7 @@ class Asset < ActiveRecord::Base
     colors.to_hex.each_with_index do |hex, i|
       begin
         color = Color.where(hex: hex, t_shirt_id: assetable.id).lock(true).first_or_initialize
-        color.percentage = percentages[i]
+        color.percentage = (percentages[i] * 100).to_i
         color.save
       rescue ActiveRecord::RecordNotUnique
         retry
