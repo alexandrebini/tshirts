@@ -10,7 +10,7 @@ class CreateTShirts < ActiveRecord::Migration
       t.timestamps
     end
     add_index :t_shirts, :source_id
-    add_index :t_shirts, :slug
+    add_index :t_shirts, :slug, unique: true
     add_index :t_shirts, :created_at
   end
 end

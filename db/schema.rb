@@ -90,7 +90,7 @@ ActiveRecord::Schema.define(version: 6) do
   end
 
   add_index "t_shirts", ["created_at"], name: "index_t_shirts_on_created_at", using: :btree
-  add_index "t_shirts", ["slug"], name: "index_t_shirts_on_slug", using: :btree
+  add_index "t_shirts", ["slug"], name: "index_t_shirts_on_slug", unique: true, using: :btree
   add_index "t_shirts", ["source_id"], name: "index_t_shirts_on_source_id", using: :btree
 
 end
