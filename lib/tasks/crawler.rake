@@ -1,11 +1,11 @@
 require "#{ Rails.root }/lib/crawler/crawler"
 
 namespace :crawler do
-  desc 'import all wallpapers'
+  desc 'import all tshirts'
   task start: :environment do
     [
       Thread.new{ Crawler::Goodfon.start! },
-      Thread.new{ Crawler::Hdwallpapers.start! },
+      Thread.new{ Crawler::Hdtshirts.start! },
       Thread.new{ Crawler::Interfacelift.start! }
     ].each(&:join)
   end
@@ -14,8 +14,8 @@ namespace :crawler do
   task download: :environment do
     jobs = 10
     puts "Starting #{ jobs } jobs..."
-    Wallpaper.pending.random.limit(jobs).each do |wallpaper|
-      wallpaper.download_image
+    TShirt.pending.random.limit(jobs).each do |tshirt|
+      tshirt.download_image
     end
   end
 
@@ -23,11 +23,11 @@ namespace :crawler do
   task restart_downloads: :environment do
     Thread.abort_on_exception = true
 
-    reset_wallpapers_attributes!
+    reset_tshirts_attributes!
     move_images_to_tmp!
     cleanup_images_dir!
 
-    queue = enqueue_local_wallpapers
+    queue = enqueue_local_tshirts
 
     puts "let's work..."
     puts "#{ queue[:total_downloaded] } downloaded"
@@ -35,51 +35,51 @@ namespace :crawler do
     Rake::Task['crawler:download'].invoke
   end
 
-  def reset_wallpapers_attributes!
-    # clear wallpapers
-    Wallpaper.update_all(image_file_name: nil, image_content_type: nil,
+  def reset_tshirts_attributes!
+    # clear tshirts
+    TShirt.update_all(image_file_name: nil, image_content_type: nil,
       image_file_size: nil, image_updated_at: nil, image_meta: nil,
       image_fingerprint: nil)
 
     # clean colors
-    Color.connection.execute "TRUNCATE TABLE wallpapers_colors;"
+    Color.connection.execute "TRUNCATE TABLE tshirts_colors;"
     Color.connection.execute "TRUNCATE TABLE colors;"
     Color.destroy_all
-    Wallpaper.update_all(status: 'pending')
+    TShirt.update_all(status: 'pending')
   end
 
   def move_images_to_tmp!
-    tmp_dir = "#{ Rails.root }/public/system/wallpapers_tmp"
+    tmp_dir = "#{ Rails.root }/public/system/tshirts_tmp"
     FileUtils.mkdir_p tmp_dir
 
-    Dir["#{ Rails.root }/public/system/wallpapers/**/*_original.*"].each do |file|
+    Dir["#{ Rails.root }/public/system/tshirts/**/*_original.*"].each do |file|
       FileUtils.mv file, tmp_dir
     end
   end
 
   def cleanup_images_dir!
-    puts "Are you sure you want to delete the wallpapers dir? 5 seconds to think about it..."
+    puts "Are you sure you want to delete the tshirts dir? 5 seconds to think about it..."
     sleep(5)
-    FileUtils.rm_rf "#{ Rails.root }/public/system/wallpapers/"
+    FileUtils.rm_rf "#{ Rails.root }/public/system/tshirts/"
   end
 
-  def enqueue_local_wallpapers
+  def enqueue_local_tshirts
     count = 0
-    result = { total: Wallpaper.count, total_downloaded: 0 }
+    result = { total: TShirt.count, total_downloaded: 0 }
     unless result[:total].zero?
       slice_size = result[:total] > 10 ? result[:total]/10 : 10
 
-      Wallpaper.select('id, image_src').all.each_slice(slice_size).map do |wallpapers|
+      TShirt.select('id, image_src').all.each_slice(slice_size).map do |tshirts|
         Thread.new do
-          wallpapers.each do |wallpaper|
+          tshirts.each do |tshirt|
             count += 1
             puts "Restart downloads: #{ count }/#{ result[:total] }" if count % 500 == 0
 
-            next if wallpaper.image_src.blank?
+            next if tshirt.image_src.blank?
 
-            if Crawler::FileHelper.find_local_image(wallpaper.image_src, cache: true)
+            if Crawler::FileHelper.find_local_image(tshirt.image_src, cache: true)
               result[:total_downloaded] += 1
-              wallpaper.download_image
+              tshirt.download_image
             end
           end
         end

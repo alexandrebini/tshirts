@@ -32,36 +32,32 @@ module Crawler
     end
 
     def crawl_page(url)
-      log "\ncrawling a list of wallpapers #{ @pages_count += 1 }/#{ @pages.size } from #{ url }"
+      log "\ncrawling a list of tshirts #{ @pages_count += 1 }/#{ @pages.size } from #{ url }"
       begin
-        get_wallpapers Nokogiri::HTML(open_url url)
+        get_tshirts Nokogiri::HTML(open_url url)
       rescue
         log "\nerror on crawling #{ url }. Trying again..."
       end
     end
 
-    def get_wallpapers(page)
-      links = send(self.crawler_options[:wallpapers_urls], page)
-      links -= Wallpaper.where('source_url in (?)', links).map(&:source_url)
+    def get_tshirts(page)
+      links = send(self.crawler_options[:tshirts_urls], page)
+      links -= TShirt.where('source_url in (?)', links).map(&:source_url)
       return if links.size == 0
 
       @total += links.size
 
       begin
-        links.shuffle.each { |link| crawl_wallpaper(link) }
+        links.shuffle.each { |link| crawl_tshirt(link) }
       rescue Exception => e
         fail_log "\n #{ e }\n" + e.backtrace.join("\n")
       end
     end
 
-    def crawl_wallpaper(url)
-      log "\ncrawling wallpaper #{ @count += 1 }/#{ @total } from #{ url }"
+    def crawl_tshirt(url)
+      log "\ncrawling tshirt #{ @count += 1 }/#{ @total } from #{ url }"
       page = Nokogiri::HTML(open_url url)
-
-      image_src = send(self.crawler_options[:parse_image], page: page, url: url)
-      return if Wallpaper.where(image_src: image_src).exists?
-
-      send(self.crawler_options[:parse_wallpaper], page: page, url: url, image_src: image_src)
+      send(self.crawler_options[:parse_tshirt], page: page, url: url)
     rescue Exception => e
       fail_log "\n#{ url }\t#{ e.to_s }\n#{ e.backtrace.join("\n") }"
     end
