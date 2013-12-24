@@ -12,5 +12,6 @@ module Crawler
   autoload :ClassMethods,     File.expand_path('../base/class_methods', __FILE__)
   autoload :InstanceMethods,  File.expand_path('../base/instance_methods', __FILE__)
 
+  autoload :Redbug,           File.expand_path('../redbug', __FILE__)
   autoload :Vandal,           File.expand_path('../vandal', __FILE__)
 end

@@ -7,7 +7,7 @@ module Crawler
     def source
       @source ||= Source.where(
         name: 'Vandal',
-        url: 'http://www.vandal.com.br/',
+        url: 'http://www.vandal.com.br',
         start_url: 'http://www.vandal.com.br/?new_products=true&ajax=1',
         verification_matcher: 'UA-24684501-1'
       ).first_or_create
@@ -19,7 +19,7 @@ module Crawler
 
     def tshirts_urls(page)
       page.css('.col-md-3.col-sm-4.col-xs-6 > a').map do |a|
-        "http://#{ URI.parse(source.url).host }#{ a.attr(:href) }"
+        "#{ source.url }/#{ a.attr(:href) }"
       end
     end
 
@@ -46,8 +46,8 @@ module Crawler
 
     def parse_photos(options)
       options[:page].css('.carousel-inner img').map do |img|
-        "http://#{ URI.parse(source.url).host }/#{ img.attr(:src) }"
-      end.compact.uniq
+        "#{ source.url }/#{ img.attr(:src) }"
+      end
     end
 
     def parse_price(options)

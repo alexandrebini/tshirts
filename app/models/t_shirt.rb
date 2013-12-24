@@ -23,8 +23,10 @@ class TShirt < ActiveRecord::Base
   end
 
   def photos_urls=urls
-    urls.each do |url|
-      photos.where(source_url: url).first_or_initialize
+    urls.compact.uniq.each do |url|
+      unless photos.where(source_url: url).exists?
+        photos.build(source_url: url)
+      end
     end
   end
 
@@ -35,14 +37,14 @@ class TShirt < ActiveRecord::Base
   end
 
   def female_sizes=sizes
-    new_sizes = sizes.map do |size|
+    new_sizes = sizes.compact.uniq.map do |size|
       self.female_sizes.where(label: size.upcase).first_or_initialize
     end
     self.female_sizes.replace new_sizes
   end
 
   def male_sizes=sizes
-    new_sizes = sizes.map do |size|
+    new_sizes = sizes.compact.uniq.map do |size|
       self.male_sizes.where(label: size.upcase).first_or_initialize
     end
     self.male_sizes.replace new_sizes

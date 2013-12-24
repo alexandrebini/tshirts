@@ -18,7 +18,7 @@ module Crawler
     end
 
     def get_pages(page)
-      @pages = send(self.crawler_options[:pages_urls], page)
+      @pages = send(self.crawler_options[:pages_urls], page).compact.uniq
 
       begin
         @pages.shuffle.each_slice(slice_size @pages).map do |pages_slice|
@@ -41,7 +41,7 @@ module Crawler
     end
 
     def get_tshirts(page)
-      links = send(self.crawler_options[:tshirts_urls], page)
+      links = send(self.crawler_options[:tshirts_urls], page).compact.uniq
       links -= TShirt.where('source_url in (?)', links).map(&:source_url)
       return if links.size == 0
 

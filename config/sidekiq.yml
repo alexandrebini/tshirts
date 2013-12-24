@@ -1,7 +1,8 @@
 ---
 :pidfile: tmp/pids/sidekiq.pid
 :queues:
-  - [vandal, 2]
+  - [redbug, 1]
+  - [vandal, 1]
   - [default, 2]
 development:
   :concurrency: 20
