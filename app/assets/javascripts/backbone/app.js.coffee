@@ -1,4 +1,4 @@
-@TShirt = do (Backbone, Marionette) ->
+@TShirtApp = do (Backbone, Marionette) ->
 
   App = new Marionette.Application
 
