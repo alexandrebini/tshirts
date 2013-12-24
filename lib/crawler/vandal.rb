@@ -19,20 +19,21 @@ module Crawler
 
     def tshirts_urls(page)
       page.css('.col-md-3.col-sm-4.col-xs-6 > a').map do |a|
-        "http://#{ URI.parse(source.url).host }/#{ a.attr(:href) }"
+        "http://#{ URI.parse(source.url).host }#{ a.attr(:href) }"
       end
     end
 
     def parse_tshirt(options)
-      a = TShirt.new(
+      TShirt.create(
         source: source,
         source_url: options[:url],
         title: parse_title(options[:page]),
         stamp_url: parse_stamp(options),
-        photos_urls: parse_photos(options)
+        photos_urls: parse_photos(options),
+        price: parse_price(options),
+        female_sizes: parse_female_sizes(options),
+        male_sizes: parse_male_sizes(options)
       )
-      puts a.save
-      p a.errors
     end
 
     def parse_title(page)
@@ -47,6 +48,22 @@ module Crawler
       options[:page].css('.carousel-inner img').map do |img|
         "http://#{ URI.parse(source.url).host }/#{ img.attr(:src) }"
       end.compact.uniq
+    end
+
+    def parse_price(options)
+      options[:page].css('#price').text.scan(/\d+/).join.to_i
+    end
+
+    def parse_female_sizes(options)
+      options[:page].css('#sizes-of-gender-female > li > label').map do |label|
+        label.text
+      end
+    end
+
+    def parse_male_sizes(options)
+      options[:page].css('#sizes-of-gender-male > li > label').map do |label|
+        label.text
+      end
     end
   end
 end

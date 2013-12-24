@@ -5,6 +5,8 @@ class TShirt < ActiveRecord::Base
   # relationship
   belongs_to :source
   has_many :sizes
+  has_many :female_sizes, class_name: 'Size', through: :sizes, -> { where gender: 'female' }
+  has_many :male_sizes, class_name: 'Size', through: :sizes, -> { where gender: 'male' }
   has_many :colors
   has_many :prices
   has_one :stamp, as: :assetable, dependent: :destroy
@@ -22,9 +24,23 @@ class TShirt < ActiveRecord::Base
 
   def photos_urls=urls
     urls.each do |url|
-      unless photos.where(source_url: url).exists?
-        photos.build(source_url: url)
-      end
+      photos.where(source_url: url).first_or_create
     end
+  end
+
+  def price=value
+    unless prices.last && prices.last.value == value
+      self.prices.build(value: value)
+    end
+  end
+
+  def female_sizes=sizes
+    self.sizes.where(gender: 'female', "sizes.label not in (#{ sizes })").destroy_all
+    new_sizes = sizes.each do |size|
+      self.sizes.where(gender: 'female', label: size).first_or_initialize
+    end
+  end
+
+  def male_sizes=sizes
   end
 end
