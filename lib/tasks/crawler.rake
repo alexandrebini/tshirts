@@ -24,8 +24,6 @@ namespace :crawler do
     Thread.abort_on_exception = true
 
     reset_tshirts_attributes!
-    move_images_to_tmp!
-    cleanup_images_dir!
 
     queue = enqueue_local_tshirts
 
@@ -61,30 +59,5 @@ namespace :crawler do
     puts "Are you sure you want to delete the tshirts dir? 5 seconds to think about it..."
     sleep(5)
     FileUtils.rm_rf "#{ Rails.root }/public/system/tshirts/"
-  end
-
-  def enqueue_local_tshirts
-    count = 0
-    result = { total: TShirt.count, total_downloaded: 0 }
-    unless result[:total].zero?
-      slice_size = result[:total] > 10 ? result[:total]/10 : 10
-
-      TShirt.select('id, image_src').all.each_slice(slice_size).map do |tshirts|
-        Thread.new do
-          tshirts.each do |tshirt|
-            count += 1
-            puts "Restart downloads: #{ count }/#{ result[:total] }" if count % 500 == 0
-
-            next if tshirt.image_src.blank?
-
-            if Crawler::FileHelper.find_local_image(tshirt.image_src, cache: true)
-              result[:total_downloaded] += 1
-              tshirt.download_image
-            end
-          end
-        end
-      end.each(&:join)
-    end
-    result
   end
 end
