@@ -4,7 +4,7 @@ class CreateSources < ActiveRecord::Migration
       t.string :name
       t.string :url
       t.string :start_url
-      t.text :verification_matcher
+      t.string :verification_matcher
       t.timestamps
     end
     add_index :sources, :name, unique: true

@@ -71,7 +71,7 @@ ActiveRecord::Schema.define(version: 6) do
     t.string   "name"
     t.string   "url"
     t.string   "start_url"
-    t.text     "verification_matcher"
+    t.string   "verification_matcher"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
