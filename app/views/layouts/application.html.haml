@@ -1,0 +1,15 @@
+!!! 5
+%html{'xmlns' => 'http://www.w3.org/1999/xhtml', 'lang' => 'pt-br', 'xml:lang' => 'pt-br', 'xmlns:og' => 'http://opengraphprotocol.org/schema/', 'xmlns:fb' => 'http://www.facebook.com/2008/fbml'}
+  %head
+    %title Tshirt
+    %meta{ content: 'width=device-width', name: 'viewport' }
+    %meta{ content: 'text/html; charset=utf-8', 'http-equiv' => 'Content-Type' }
+
+    = stylesheet_link_tag :application, media: 'all'
+    = csrf_meta_tags
+
+  %body
+    = yield
+
+    = javascript_include_tag :application
+    = yield :javascript
