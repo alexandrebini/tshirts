@@ -2,7 +2,6 @@ require 'nokogiri'
 require 'open-uri'
 require 'net/http'
 require 'csv'
-require 'public_suffix'
 require 'singleton'
 
 module Crawler

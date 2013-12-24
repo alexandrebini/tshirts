@@ -11,5 +11,20 @@ class TShirt < ActiveRecord::Base
   has_many :photos, as: :assetable, dependent: :destroy
 
   # validations
-  validates_presence_of :title, :source_url, :gender
+  validates_presence_of :title, :source_url
+
+  # others
+  def stamp_url=url
+    unless stamp && stamp.source_url == url
+      self.build_stamp(source_url: url)
+    end
+  end
+
+  def photos_urls=urls
+    urls.each do |url|
+      unless photos.where(source_url: url).exists?
+        photos.build(source_url: url)
+      end
+    end
+  end
 end

@@ -16,13 +16,12 @@ module Crawler
       else
         @source = 'remote'
         @file = StringIO.new(Crawler::UrlOpener.instance.open_url @asset.source_url,
-          proxy: false, min_size: 22.kilobytes, image: true)
+          proxy: false, min_size: 22.kilobytes, image: true, name: @asset.source.slug)
       end
 
       @asset.data = @file
       @asset.data_file_name = @filename
       @asset.status = 'downloaded'
-      @asset.colors.destroy_all
 
       if @asset.save
         download_logger "\nTShirt #{ @asset.id } image: #{ @asset.source_url } (#{ @source })"

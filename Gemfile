@@ -12,12 +12,12 @@ gem 'jquery-rails', '3.0.4'
 
 gem 'paperclip', '3.5.2'
 gem 'paperclip-meta', '0.4.3'
+gem 'miro', '0.2.3'
 gem 'jbuilder', '1.5.3'
 gem 'friendly_id', '5.0.2'
 
 gem 'nokogiri', '1.5.6'
 gem 'hidemyass', '0.2.0'
-gem 'public_suffix', '1.3.3'
 gem 'sidekiq', '2.17.1'
 gem 'sidekiq-middleware', '0.1.4'
 gem 'settingslogic', '2.0.9'

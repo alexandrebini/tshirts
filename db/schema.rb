@@ -17,6 +17,8 @@ ActiveRecord::Schema.define(version: 6) do
     t.integer  "assetable_id"
     t.string   "assetable_type"
     t.string   "type"
+    t.string   "source_url"
+    t.string   "status"
     t.string   "data_file_name"
     t.string   "data_content_type"
     t.string   "data_file_size"
@@ -29,6 +31,7 @@ ActiveRecord::Schema.define(version: 6) do
   add_index "assets", ["assetable_id", "assetable_type"], name: "index_assets_on_assetable_id_and_assetable_type", using: :btree
   add_index "assets", ["assetable_id"], name: "index_assets_on_assetable_id", using: :btree
   add_index "assets", ["assetable_type"], name: "index_assets_on_assetable_type", using: :btree
+  add_index "assets", ["status"], name: "index_assets_on_status", using: :btree
   add_index "assets", ["type"], name: "index_assets_on_type", using: :btree
 
   create_table "colors", force: true do |t|
@@ -69,6 +72,7 @@ ActiveRecord::Schema.define(version: 6) do
 
   create_table "sources", force: true do |t|
     t.string   "name"
+    t.string   "slug"
     t.string   "url"
     t.string   "start_url"
     t.text     "verification_matcher"
@@ -77,6 +81,7 @@ ActiveRecord::Schema.define(version: 6) do
   end
 
   add_index "sources", ["name"], name: "index_sources_on_name", unique: true, using: :btree
+  add_index "sources", ["slug"], name: "index_sources_on_slug", unique: true, using: :btree
 
   create_table "t_shirts", force: true do |t|
     t.integer  "source_id"

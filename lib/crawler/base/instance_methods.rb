@@ -68,7 +68,11 @@ module Crawler
 
     private
     def open_url(url, options={})
-      default_options = { verification_matcher: self.source.verification_matcher, proxy: false }
+      default_options = {
+        verification_matcher: self.source.verification_matcher,
+        proxy: false,
+        name: self.source.slug
+      }
       options.merge!(default_options)
       Crawler::UrlOpener.instance.open_url(url, options)
     end

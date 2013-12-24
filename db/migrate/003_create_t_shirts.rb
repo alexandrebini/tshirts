@@ -3,7 +3,6 @@ class CreateTShirts < ActiveRecord::Migration
     create_table :t_shirts, options: 'engine=MyISAM DEFAULT CHARSET=utf8' do |t|
       t.references :source
       t.string :slug
-      t.string :gender
       t.string :title
       t.string :description
       t.string :source_url

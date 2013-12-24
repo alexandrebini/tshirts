@@ -24,27 +24,13 @@ module Crawler
         return body unless body.blank?
 
         # if does not work, try with proxy
-        error_logger "\nlocalhost marked as denied. Trying with proxy...", uri
+        error_logger "\nlocalhost marked as denied. Trying with proxy...", options[:name], uri
         @denied_host = true
         return open_url_with_proxy(uri, options)
       end
     end
 
     def open_url_with_proxy(uri, options={})
-      # attempts = 0
-      # begin
-      #   response = HideMyAss.get(uri.to_s)
-      #   if body_is_valid?(response, uri, options)
-      #     return response.body
-      #   else
-      #     raise "Body is nil" if body.blank?
-      #   end
-      # rescue Exception => e
-      #   error_logger "\n#{ uri } (#{ attempts += 1 }/#{ options[:max_attempts] }) \n\t#{ e.to_s }.", uri
-      #   sleep(5)
-      #   retry unless attempts >= options[:max_attempts]
-      # end
-
       @denied_proxies ||= []
       attempts = 0
       begin
@@ -54,7 +40,7 @@ module Crawler
         raise "Body is nil" if body.blank?
         return body
       rescue Exception => e
-        error_logger "\n#{ uri } (#{ attempts += 1 }/#{ options[:max_attempts] }) \n\t#{ e.to_s }\n#{ e.backtrace.join("\n") }. Proxy #{ proxy_uri } marked as denied, trying again with a new one...", uri
+        error_logger "\n#{ uri } (#{ attempts += 1 }/#{ options[:max_attempts] }) \n\t#{ e.to_s }\n#{ e.backtrace.join("\n") }. Proxy #{ proxy_uri } marked as denied, trying again with a new one...", options[:name], uri
         @denied_proxies << proxy unless @denied_proxies.include?(proxy)
         sleep(5)
         retry unless attempts >= options[:max_attempts]
@@ -72,7 +58,7 @@ module Crawler
         GC.start
         return body
       rescue Exception => e
-        error_logger "\n#{ uri } (#{ attempts += 1 }/#{ options[:max_attempts] }) \n\t#{ e.to_s }\n#{ e.backtrace.join("\n") }. Trying again...", uri
+        error_logger "\n#{ uri } (#{ attempts += 1 }/#{ options[:max_attempts] }) \n\t#{ e.to_s }\n#{ e.backtrace.join("\n") }. Trying again...", options[:name], uri
         sleep(5)
         retry unless attempts >= options[:max_attempts]
       end
@@ -180,11 +166,11 @@ module Crawler
       return (@proxy_list - @denied_proxies.to_a).sample
     end
 
-    def error_logger(msg, url=nil)
-      logger = if url.present?
-        Logger.new("#{ Rails.root }/log/#{ PublicSuffix.parse(URI.parse(url.to_s).host).sld }.crawler.log")
+    def error_logger(msg, name=nil, url=nil)
+      logger = if name.present?
+        Logger.new("#{ Rails.root }/log/#{ name }.crawler.log")
       else
-        Logger.new("#{ Rails.root }/log/crawler_error_teste.log")
+        Logger.new("#{ Rails.root }/log/crawler_error.log")
       end
       puts msg
       logger << msg

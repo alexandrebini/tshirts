@@ -14,23 +14,25 @@ module Crawler
     end
 
     def pages_urls(page)
-      pages << @source.start_url
+      [@source.start_url]
     end
 
     def tshirts_urls(page)
       page.css('.col-md-3.col-sm-4.col-xs-6 > a').map do |a|
-        a.attr(:href)
+        "http://#{ URI.parse(source.url).host }/#{ a.attr(:href) }"
       end
     end
 
     def parse_tshirt(options)
-      TShirt.create(
+      a = TShirt.new(
         source: source,
         source_url: options[:url],
         title: parse_title(options[:page]),
-        stamp_url: parse_stamp(options[]),
+        stamp_url: parse_stamp(options),
         photos_urls: parse_photos(options)
       )
+      puts a.save
+      p a.errors
     end
 
     def parse_title(page)
@@ -38,12 +40,12 @@ module Crawler
     end
 
     def parse_stamp(options)
-      "http:#{ options[:page].css('#source-url') }"
+      "http:#{ options[:page].css('#source-url').text }"
     end
 
     def parse_photos(options)
       options[:page].css('.carousel-inner img').map do |img|
-        "http:#{ URI.parse(source.url).host }/#{ img.attr(:src) }"
+        "http://#{ URI.parse(source.url).host }/#{ img.attr(:src) }"
       end.compact.uniq
     end
   end
