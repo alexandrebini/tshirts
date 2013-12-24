@@ -11,6 +11,7 @@ gem 'coffee-rails', '4.0.1'
 gem 'jquery-rails', '3.0.4'
 
 gem 'paperclip', '3.5.2'
+gem 'paperclip-meta', '0.4.3'
 gem 'jbuilder', '1.5.3'
 gem 'friendly_id', '5.0.2'
 
