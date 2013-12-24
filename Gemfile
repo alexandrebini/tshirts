@@ -22,5 +22,6 @@ gem 'sidekiq-middleware', '0.1.4'
 gem 'settingslogic', '2.0.9'
 
 group :development do
+  gem 'puma', '2.7.1'
   gem 'foreman', '0.63.0'
 end

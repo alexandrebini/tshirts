@@ -3,4 +3,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-Tshirts::Application.load_tasks
+TShirts::Application.load_tasks
