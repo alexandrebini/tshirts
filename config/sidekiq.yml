@@ -1,6 +1,7 @@
 ---
 :pidfile: tmp/pids/sidekiq.pid
 :queues:
+  - camiseteria
   - chicorei
   - redbug
   - vandal
